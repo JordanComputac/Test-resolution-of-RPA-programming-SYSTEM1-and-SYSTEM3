@@ -11,6 +11,8 @@ class DeskAPP:
         
         load_dotenv()
         path_system3 = os.getenv("PATH_SYSTEM3")
+        self.email = os.getenv("EMAIL")
+        self.passw = os.getenv("PASSW")
         self.app = Application().start(cmd_line=path_system3)
         time.sleep(2)
           
@@ -18,7 +20,13 @@ class DeskAPP:
     def close(self):
         
         self.app.ACMESystem3.Exit.click()
+    
+    def login(self):
 
+        self.app.ACMESystem3["Username:Edit"].type_keys(self.email)
+        self.app.ACMESystem3["Password:Edit"].type_keys(self.passw)
+        self.app.ACMESystem3.Login.click()
+    
 
 '''if __name__ == "__main__":
     desk_app = DeskAPP()'''
