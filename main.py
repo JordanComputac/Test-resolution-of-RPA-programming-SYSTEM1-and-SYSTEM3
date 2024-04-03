@@ -1,10 +1,23 @@
+from deskapp import DeskAPP
+from webapp import ChromeDriverManager
 import time
-import pywinauto
-from pywinauto.application import Application
-from pywinauto.keyboard import send_keys
-from selenium import webdriver
 
-app = Application().start(cmd_line=r'"C:\Users\maema\Downloads\ACME-System3-v0.1\ACME-System3-v0.1\ACME-System3.exe"')
+
+
+chrome_driver_manager = ChromeDriverManager()
+driver = chrome_driver_manager.get_driver()
+
+
+
+
+
+driver.get("https://www.google.com")
+
+
+
+desk_app = DeskAPP()
+desk_app.close()
+
+chrome_driver_manager.search()
 time.sleep(2)
-app.ACMESystem3.Exit.click()
-
+driver.quit()
