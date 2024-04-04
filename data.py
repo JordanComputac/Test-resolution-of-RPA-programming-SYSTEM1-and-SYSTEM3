@@ -29,19 +29,19 @@ class DataManager:
             print(f"Key: {key}, Value: {value}")
             
         
-        new_df = pd.DataFrame.from_dict(data_dict, orient='index').T
-        #csv_file_path = os.path.join(self.csv_dir, filename+".csv")
+        df = pd.DataFrame.from_dict(data_dict, orient='index').T
+        csv_file_path = os.path.join(self.csv_dir, filename+".csv")
         
         #Abaixo salva como text
         #csv_file_path = os.path.join(self.csv_dir, filename+".csv")
 
-        #df.to_csv(csv_file_path, index=False)
+        df.to_csv(csv_file_path, index=False)
         
 
-        with open('testando.csv', 'a') as f:
-            new_df.to_csv(f, header=False, index=False)
+        '''with open('testando.csv', 'a') as f:
+            new_df.to_csv(f, header=False, index=False)'''
 
-        breakpoint()
+    
         '''if self.save_directory is None:
             raise ValueError("Save directory is not set. Call set_save_directory() first.")
 

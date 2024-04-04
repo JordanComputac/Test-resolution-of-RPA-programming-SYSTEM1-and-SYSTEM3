@@ -8,12 +8,12 @@ import time
 chrome_driver_manager = ChromeDriverManager()
 #driver = chrome_driver_manager.get_driver()
 chrome_driver_manager.login()
-chrome_driver_manager.fetch_data()
-
+#chrome_driver_manager.fetch_data()
+chrome_driver_manager.loop_data()
 
 data_man = DataManager()
 
-
+breakpoint()
 desk_app = DeskAPP()
 desk_app.login()
 

@@ -9,6 +9,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.common.exceptions import NoSuchElementException
+
 import PyPDF2
 import glob
 import os
@@ -100,80 +102,106 @@ class ChromeDriverManager:
         pdf_file_path = os.path.join(self.pdf_dir, pdf_files[0])
 
         pdfFileObj = open(pdf_file_path, "rb")
-        pdf_reader = PyPDF2.PdfReader(pdfFileObj)
-
-        
+        pdf_reader = PyPDF2.PdfReader(pdfFileObj)        
         
         num_pages = len(pdf_reader.pages)
         pageObj = pdf_reader.pages[0]
-        extractedData = pageObj.extract_text()
+        #extractedData = pageObj.extract_text()
         
-        sections = extractedData.strip().split('\n\n')
-        lista = []
+        
+        pa = pageObj.extract_text()
+        pab = pa.splitlines()
+        pdfFileObj.close()
 
-        for section in sections:
-            print(section.strip())
-            breakpoint()
-            lista.append(section.strip())
-
-        '''lista = []
-        _ = list(map(lambda x: lista.append(x.strip()), sections))        
-       '''
-        return lista, pdf_file_path
+        return pab, pdf_file_path
 
 
         
 
 
     def fetch_data(self):
-        
-        #result_list = self.driver.find_elements(By.XPATH,"//table[@class='table']//child::tr")
+                
         result_list = self.driver.find_elements(By.XPATH,"(//table[@class='table']//tr//td[text() = 'WI2'])")
+        control = 1
 
-        link = self.driver.find_element(By.XPATH,"((//table[@class='table']//tr//td[text() = 'WI2']//preceding-sibling::td)[1]/a)[1]")
-        #link = link.get_attribute("href")
-        original_tab = self.driver.current_window_handle
-        actions = ActionChains(self.driver)
-        
-        actions.key_down(Keys.CONTROL).click(link).key_up(Keys.CONTROL).perform()
-        new_tab = self.driver.window_handles[-1]
-        self.driver.switch_to.window(new_tab)
-        
-        pdf_link = self.driver.find_element(By.XPATH,"//button[@class='btn btn-primary']//ancestor::a")
-        pdf_link.click()
-        
-        
-        ID = self.driver.find_elements(By.XPATH,"(//div[@class='col-lg-5']//child::p//b)")
-        
-        details_element = self.driver.find_element(By.XPATH, "((//div[@class='col-lg-5']//p)//following::p)[1]")
-        details_string = details_element.text
-
-        details_lines = details_string.split('\n')
-        details_dict = {}
-
-        for line in details_lines:
+        for n in range(len(result_list)):
             
-            key, value = line.split(': ')
+            link = self.driver.find_element(By.XPATH,f"((//table[@class='table']//tr//td[text() = 'WI2']//preceding-sibling::td)/a)[{control}]")
             
-            details_dict[key] = value
+            #Rotina para baixar o documento
+            original_tab = self.driver.current_window_handle
+            actions = ActionChains(self.driver)
+            
+            actions.key_down(Keys.CONTROL).click(link).key_up(Keys.CONTROL).perform()
+            new_tab = self.driver.window_handles[-1]
+            self.driver.switch_to.window(new_tab)
+            
+            pdf_link = self.driver.find_element(By.XPATH,"//button[@class='btn btn-primary']//ancestor::a")
+            pdf_link.click()
+            time.sleep(3)
+
+            #Manipulando e unindo dados do PDF
+            ID = self.driver.find_elements(By.XPATH,"(//div[@class='col-lg-5']//child::p//b)")
         
-        print(details_dict)
-        wiid_value = details_dict['WIID']
-        print("WIID:", wiid_value)
+            details_element = self.driver.find_element(By.XPATH, "((//div[@class='col-lg-5']//p)//following::p)[1]")
+            details_string = details_element.text
+
+            details_lines = details_string.split('\n')
+            details_dict = {}
+
+            for line in details_lines:
+                
+                key, value = line.split(': ')
+                
+                details_dict[key] = value
+            
+            print(details_dict)
+            wiid_value = details_dict['WIID']
+            print("WIID:", wiid_value)
+            
+            time.sleep(4)
+            
+            lista, arch_name = self.read_pdf(wiid_value)
+            try:
+                os.remove(arch_name)
+                print(f"Documento {arch_name} removido com sucesso")
+            except:
+                print(f"Documento {arch_name} não encontrado, pode já ter sido deletado")        
+
+            details_dict['Client_Name'] = lista[26]
+            details_dict['Client_Request_ID'] = lista[27]
+            details_dict['Client_Check_Number'] = lista[29]
+            details_dict['Client_Check_Date'] = lista[30]
+            
+
+            self.data_man.save_csv(wiid_value, details_dict)
+
+            self.driver.close()
+            self.driver.switch_to.window(original_tab)
+            
+            control = control+2
+
+        return print("Rolando página para próxima busca...")
         
-        time.sleep(4)
         
-        lista, arch_name = self.read_pdf(wiid_value)
+    def loop_data(self):
+        while True:
+            
+            self.fetch_data()
+            try:
+                self.click_next()
+                
+                if self.click_next() == None:
+                    break
+
+
+            except NoSuchElementException:
+                print("Busca de dados finalizada com sucesso!")
+                break
+            
         
-        breakpoint()
-        #os.remove(arch_name)  
-        self.data_man.save_csv("testando", details_dict)
 
         
-
-        self.driver.close()
-        self.driver.switch_to.window(original_tab)
-        self.click_next()
 
 
         

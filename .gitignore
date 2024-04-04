@@ -1,3 +1,6 @@
 # Ignore .env file
 .env
 chrome-win64
+\datas
+\venv
+\csv_files
