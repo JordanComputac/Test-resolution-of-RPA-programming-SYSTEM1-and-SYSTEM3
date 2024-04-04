@@ -36,14 +36,80 @@ class DataManager:
         #csv_file_path = os.path.join(self.csv_dir, filename+".csv")
 
         df.to_csv(csv_file_path, index=False)
+
+
+    def files_list_csv_count(self):
+        csv_dir = self.csv_dir    
+        all_files = os.listdir(csv_dir)
+
+        csv_files = [file for file in all_files if file.endswith('.csv')]
+        csv_file_names = list(map(lambda x: x, csv_files))
+
+        return csv_file_names
+
+    def files_list_csv(self, iterat):
+        csv_dir = self.csv_dir    
+        all_files = os.listdir(csv_dir)
+
+        csv_files = [file for file in all_files if file.endswith('.csv')]
+        csv_file_names = list(map(lambda x: x, csv_files))
+
+        return csv_file_names[iterat]
+
+
+    def get_check_number(self, file):
+        
+        path_csv = self.csv_dir+f"\\{file}"
+        df = pd.read_csv(path_csv)
+
+        value = df.loc[0, "Client_Check_Number"]
+
+        return value
+
+    def get_date(self, file):
+        
+        path_csv = self.csv_dir+f"\\{file}"
+        df = pd.read_csv(path_csv)
+                
+        value = df.loc[0, "Date"]
+
+        return value
+
+    def get_date_detail(self, date_string):
+        
+        year, month, day = date_string.split("-")
+
+        month_name = {
+            "01": "January", "02": "February", "03": "March", "04": "April",
+            "05": "May", "06": "June", "07": "July", "08": "August",
+            "09": "September", "10": "October", "11": "November", "12": "December"
+        }[month]
+
         
 
-        '''with open('testando.csv', 'a') as f:
-            new_df.to_csv(f, header=False, index=False)'''
-
+        return year, month_name, day
     
-        '''if self.save_directory is None:
-            raise ValueError("Save directory is not set. Call set_save_directory() first.")
+    def get_client_request_id(self, file):
 
-        file_path = os.path.join(self.save_directory, filename)'''
+        path_csv = self.csv_dir+f"\\{file}"
+        df = pd.read_csv(path_csv)
+                
+        value = df.loc[0, "Client_Request_ID"]
+
+        return value
+
+
+
+
+
+'''data_man = DataManager()
+
+file = data_man.files_list_csv(0)
+value = data_man.get_client_request_id(file)
+print(value)
+year, month_name, day = data_man.get_date_detail(value)
+print("Year:", year)
+print("Month:", month_name)
+print("Day:", day)'''
+
 

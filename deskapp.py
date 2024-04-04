@@ -13,7 +13,7 @@ class DeskAPP:
         path_system3 = os.getenv("PATH_SYSTEM3")
         self.email = os.getenv("EMAIL")
         self.passw = os.getenv("PASSW")
-        self.app = Application().start(cmd_line=path_system3)
+        self.app = Application().start(cmd_line=path_system3).connect(title ="ACME System 3")
         time.sleep(2)
           
 
@@ -27,6 +27,13 @@ class DeskAPP:
         self.app.ACMESystem3["Password:Edit"].type_keys(self.passw)
         self.app.ACMESystem3.Login.click()
     
+    def search_client(self):
+        breakpoint()
+        self.app.ACMESystem3.menu_item(u'&Clients').click()
+        
+
+
+#self.app.ACMESystem3.print_control_identifiers()
 
 '''if __name__ == "__main__":
     desk_app = DeskAPP()'''
