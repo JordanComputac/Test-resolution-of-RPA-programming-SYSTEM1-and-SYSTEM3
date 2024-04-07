@@ -14,7 +14,7 @@ data_man = DataManager()
 
 #
 #chrome_driver_manager.update_status(1)
-'''
+
 #Login
 chrome_driver_manager.login()
 #Baixa arquivos e organiza dados
@@ -28,11 +28,11 @@ for n in range(len(count)):
     chrome_driver_manager.search_check(n)
     chrome_driver_manager.submit_check(n)
     chrome_driver_manager.update_status(n)
-    '''
+    
 
 
-desk_app = DeskAPP()
-desk_app.login()
+#desk_app = DeskAPP()
+#desk_app.login()
 
 #time.sleep(12)
 #desk_app.search_client()

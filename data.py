@@ -98,6 +98,16 @@ class DataManager:
 
         return value
 
+    def get_client_name(self, file):
+
+        path_csv = self.csv_dir+f"\\{file}"
+        df = pd.read_csv(path_csv)
+                
+        value = df.loc[0, "Client_Name"]
+
+        return value
+
+
 
 
 
