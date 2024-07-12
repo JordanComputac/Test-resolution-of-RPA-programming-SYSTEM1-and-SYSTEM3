@@ -33,4 +33,3 @@ For compact purposes, the downloaded files are excluded as soon as the informati
 ![image](https://github.com/JordanComputac/teste-sbk/assets/122910793/9271c990-51f2-4f23-a78a-4deb1f73cd0e)
 
 
-The last observation is that the automation of the desktop app System3 is not fully implemented due to a lack of time. It's done using pywinauto and deals with System3 to look for clients that weren't found in System1. 
